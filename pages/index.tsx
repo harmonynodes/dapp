@@ -342,7 +342,7 @@ const series = [
                   <div className="w-full">
                     <div className="flex flex-row justify-between items-center">
                       <div className="font-medium text-xl text-gray-900 dark:text-gray-100 mr-[16px] leading-4">
-                        {info.claimableAmount?formatNumber(info.claimableAmount/1e18,0,2):0} HONE
+                        {info.claimableAmount?formatNumber(info.claimableAmount/1e18,0,4):0} HONE
                       </div>
                       <button onClick={claim} className="text-gray-900 dark:text-gray-100 dark:bg-[#00C6ED] hover:bg-[#00C6ED] text-center font-normal text-[16px] border-solid border-[#00C6ED] border-[1px] rounded-[14px] px-2 py-1 mr-2 float-right" >
                         Claim
