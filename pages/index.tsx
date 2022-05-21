@@ -18,7 +18,7 @@ const Chart  = dynamic(
 export default function Home() {
   // Authentication status
   const { address }: { address: string | null } = eth.useContainer();
-  const {info, claimRewards, payAllMaintenanceFee,approveUSDC,multicall} = token.useContainer();
+  const {info, claimRewards, payAllMaintenanceFee,approveUSDC,multicall, enableNodesFor30Days} = token.useContainer();
   const [loading, setLoading] = useState(false)
   
   const totalSupply = info.totalSupply? info.totalSupply : BigNumber.from(0)
@@ -54,15 +54,29 @@ export default function Home() {
 
   let maintenanceFee = 0
   totalNodes?.filter((node:any)=>node.lendStatus==false).forEach((node:any) => {
-    if(node.nodeType == 0)
-      maintenanceFee += 10
-    if(node.nodeType == 1)
-      maintenanceFee += 20
-    if(node.nodeType == 2)
-      maintenanceFee += 30
-    if(node.nodeType == 3)
-      maintenanceFee += 45
+      maintenanceFee += info.maintenanceFees[node.nodeType]
   })
+
+  const callEnableNodesFor30Days = () => {
+    if (!info.canEnableNodesFor30Days) {
+      console.warn('Your nodes are already activated')
+      return
+    }
+    try {
+      enableNodesFor30Days().then(async () => {
+        toast.success(`Successfully activated nodes!`)
+        await multicall()
+        setLoading(false)
+      }).catch(ex => {
+        toast.error(parseError(ex))
+        setLoading(false)
+      })
+    } catch (ex) {
+      toast.error(parseError(ex))
+      setLoading(false)
+    }
+  }
+
   const claim = () => {
     if(info.claimableAmount?.toString()){
       setLoading(true)
@@ -381,6 +395,30 @@ const series = [
                 </div>
             </div>
           </div>
+            {info.canEnableNodesFor30Days ?
+                <div
+                    className="flex flex-col flex-1 bg-gray-100 dark:bg-gray-900 rounded-[12px] border-none h-[116px] mb-[30px] md:mb-[0px] shadow-xl">
+                    <div className="p-4 text-[14px] text-[#8a8c8f]">
+                        <div className="flex">
+                            <img src="/icons/totalnode_icon.svg" alt="" className="mr-[5px]"/>
+                            <span
+                                className="text-[14px] text-gray-900 dark:text-gray-100">Enable nodes for 30 days</span>
+                        </div>
+                    </div>
+                    <div className="v-card__text pl-[32px]">
+                        <div className="flex font-medium text-2xl text-gray-900 dark:text-gray-100 mr-[16px]">
+                            <div className="w-full">
+                                <button onClick={callEnableNodesFor30Days}
+                                        className="text-gray-900 dark:text-gray-100 dark:bg-[#00C6ED] hover:bg-[#00C6ED] text-center font-normal text-[16px] border-solid border-[#00C6ED] border-[1px] rounded-[14px] px-4 py-1 mr-2 float-right">
+                                    Enable nodes
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                :
+                <div></div>
+            }
         </div>
       </div>
       

@@ -1,34 +1,16 @@
 [
     {
+        "anonymous": false,
         "inputs": [
             {
-                "internalType": "address",
-                "name": "honeAddress_",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "nftAddress_",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "rewardPool_",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "usdtAddress_",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "honeNodeAddress_",
-                "type": "address"
+                "indexed": false,
+                "internalType": "uint8",
+                "name": "version",
+                "type": "uint8"
             }
         ],
-        "stateMutability": "nonpayable",
-        "type": "constructor"
+        "name": "Initialized",
+        "type": "event"
     },
     {
         "anonymous": false,
@@ -269,6 +251,13 @@
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "initialize",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "internalType": "uint256",
@@ -335,11 +324,31 @@
         "inputs": [
             {
                 "internalType": "address",
-                "name": "rewardPool_",
+                "name": "honeAddress_",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "nftAddress_",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "usdtAddress_",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "honeNodeAddress_",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "routerAddress_",
                 "type": "address"
             }
         ],
-        "name": "setRewardPool",
+        "name": "setBasicData",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -399,6 +408,58 @@
     {
         "inputs": [
             {
+                "internalType": "uint8[]",
+                "name": "breakDay_",
+                "type": "uint8[]"
+            }
+        ],
+        "name": "updateBreakDay",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint8[]",
+                "name": "maintenanceFee_",
+                "type": "uint8[]"
+            }
+        ],
+        "name": "updateMaintenanceFee",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint8[]",
+                "name": "nodePrice_",
+                "type": "uint8[]"
+            }
+        ],
+        "name": "updateNodePrice",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint8[]",
+                "name": "rewardPercent_",
+                "type": "uint8[]"
+            }
+        ],
+        "name": "updateRewardPercent",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "internalType": "uint8",
                 "name": "nodeType_",
                 "type": "uint8"
@@ -413,5 +474,9 @@
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
+    },
+    {
+        "stateMutability": "payable",
+        "type": "receive"
     }
 ]

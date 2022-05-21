@@ -5,7 +5,15 @@ import { useEffect, useState } from "react" // React
 import { createContainer } from "unstated-next" // State management
 import { BigNumber, formatFixed } from "@ethersproject/bignumber"
 import { parseEther, formatEther, parseUnits } from "ethers/lib/utils"
-import { CONTRACT_HONE, CONTRACT_GHONE, CONTRACT_NODEMANAGER, CONTRACT_NFT, CONTRACT_MULTICALL, TOKEN_MAINTENANCE } from "./address"
+import {
+  CONTRACT_HONE,
+  CONTRACT_GHONE,
+  CONTRACT_NODEMANAGER,
+  CONTRACT_NFT,
+  CONTRACT_MULTICALL,
+  TOKEN_MAINTENANCE,
+  CONTRACT_HONE_NODE
+} from './address';
 
 const NodeManagerABI = require("abi/HarmonyNodeManageTest.json")
 const HONEABI = require("abi/HONE.json")
@@ -13,11 +21,13 @@ const USDCABI = require("abi/ERC20Mock.json")
 const ERC20ABI = require("abi/ERC20.json")
 const NFTABI = require("abi/HarmonyNode.json")
 const PairABI = require("abi/IUniswapV2Pair.json")
+const HoneNodeABI = require("abi/HoneNode.json")
 const MulticallABI = require("abi/Multicall.json")
 const UINT256_MAX = '1000000000000000000000000000000000000000000000000000000000000000'
 
 let contractNodeManager: ethers.Contract
 let contractHone: ethers.Contract
+let contractHoneNode: ethers.Contract
 let contractNFT: ethers.Contract
 let contractUSDC: ethers.Contract
 let contractPair: ethers.Contract
@@ -39,8 +49,14 @@ function useToken() {
   const loadContracts = async () => {
     contractNodeManager = getContract(CONTRACT_NODEMANAGER, NodeManagerABI)
     contractHone = getContract(CONTRACT_HONE, HONEABI)
+    contractHoneNode = getContract(CONTRACT_HONE_NODE, HoneNodeABI)
     contractNFT = getContract(CONTRACT_NFT, NFTABI)
     contractUSDC = getContract(TOKEN_MAINTENANCE,ERC20ABI )
+  }
+
+  const enableNodesFor30Days = async () => {
+    const tx = await contractHoneNode.enableMyNodesForFirst30Days()
+    await tx.wait()
   }
 
   const approve = async () => {
@@ -203,6 +219,7 @@ function useToken() {
     if(address) {
       calls.push(Hone.balanceOf(address))
       calls.push(GHone.balanceOf(address))
+      calls.push(NodeManager.getMaintenanceFee())
       calls.push(Hone.allowance(address,NodeManager.address))
       calls.push(NFT.isApprovedForAll(address, NodeManager.address))
       calls.push(TokenMaintenance.allowance(address, NodeManager.address))
@@ -243,10 +260,10 @@ function useToken() {
       }
       if(!info.totalSupply) info.totalSupply = ret[index++]
       
-      
       if(address) {
         info.balanceOfHone = ret[index++]
         info.balanceOfGHone = ret[index++]
+        info.maintenanceFees = ret[index++]
         info.approvedHone = BigNumber.from(ret[index++]).gt(0)
         info.approvedNFT = ret[index++]
         info.approvedUSDC = BigNumber.from(ret[index++]).gt(0)
@@ -268,6 +285,13 @@ function useToken() {
         //   info.approvedMaintenance = BigNumber.from(ret[index++]).gt(0)
         // }
       }
+
+      if (address && contractHoneNode) {
+        info.canEnableNodesFor30Days = await contractHoneNode.callStatic.enableMyNodesForFirst30Days()
+      } else {
+        info.canEnableNodesFor30Days = false;
+      }
+
       setInfo({...info})
     }
   }
@@ -275,7 +299,7 @@ function useToken() {
   useEffect(() => {
     let timer : NodeJS.Timer
     loadContracts().then(() => {
-      
+
       timer = setInterval(()=>multicall(), 3000)
     })
     return ()=>clearInterval(timer)
@@ -295,6 +319,7 @@ function useToken() {
     getTiers, 
     allowance, 
     allowanceBusd,
+    enableNodesFor30Days,
     approve, 
     approveUSDC,
     getNodes, 
