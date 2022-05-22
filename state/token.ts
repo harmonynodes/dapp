@@ -15,7 +15,8 @@ import {
   CONTRACT_HONE_NODE
 } from './address';
 
-const NodeManagerABI = require("abi/HarmonyNodeManageTest.json")
+const NodeManagerABI = require("abi/HarmonyNodeManage.json")
+const NodeManagerABITest = require("abi/HarmonyNodeManageTest.json")
 const HONEABI = require("abi/HONE.json")
 const USDCABI = require("abi/ERC20Mock.json")
 const ERC20ABI = require("abi/ERC20.json")
@@ -187,10 +188,8 @@ function useToken() {
     await setMulticallAddress(1666600000,CONTRACT_MULTICALL)
     const Multicall = new Provider(provider??defaultProvider)
     await Multicall.init()
-    const NodeManager = new Contract(
-      CONTRACT_NODEMANAGER,
-      NodeManagerABI
-    )
+
+    const NodeManager = new Contract(CONTRACT_NODEMANAGER, NodeManagerABITest)
 
     const Hone = new Contract(CONTRACT_HONE, ERC20ABI)
 
