@@ -82,7 +82,7 @@ export default function Home() {
       setLoading(true)
     try {
       claimRewards().then(async () => {
-        toast.success(`Successfully created 1 nodes!`)
+        toast.success(`Successfully claimed!`)
         await multicall()
         setLoading(false)
       }).catch(ex => {
