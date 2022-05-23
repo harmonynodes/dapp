@@ -91,6 +91,12 @@ export default function Nav(props:any) {
                     </a>
                   </Link>
                 ))}
+                <a href="https://swap.harmonynodes.com" className={cn("flex m-auto hover:bg-[#00c6ed] w-[188px] h-[46px] rounded-[10px] mx-[28px] mb-[14px] md:mb-[30px]")}>
+                  <div className="mx-[23.5px] my-auto h-1/2"></div>
+                  <div className="my-auto">
+                    <div className="text-[14px] text-gray-900 dark:text-gray-100">Trade $HONE</div>
+                  </div>
+                </a>
               </div>
             </div>
             <div className="mb-6 flex flex-col items-center">
